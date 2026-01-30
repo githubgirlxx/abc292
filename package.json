@@ -2,7 +2,7 @@
   "name": "cfnew-obfuscator",
   "version": "1.0.0",
   "scripts": {
-    "build": "npx javascript-obfuscator \"少年你相信光吗\" --output _worker.js --string-array true --string-array-encoding 'base64' --identifier-names-generator 'hexadecimal'"
+    "build": "cp \"少年你相信光吗\" entry.js && npx javascript-obfuscator entry.js --output _worker.js --string-array true --string-array-encoding 'base64' --identifier-names-generator 'hexadecimal' && rm entry.js"
   },
   "devDependencies": {
     "javascript-obfuscator": "^4.1.0"
