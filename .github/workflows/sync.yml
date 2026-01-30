@@ -1,0 +1,36 @@
+name: Upstream Sync
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    # 29 1 代表 UTC 时间 01:29，即北京时间 09:29
+    - cron: "21 9 * * *"
+  workflow_dispatch: # 保留手动触发按钮
+
+jobs:
+  sync_latest_from_upstream:
+    name: Sync latest commits from upstream repo
+    runs-on: ubuntu-latest
+    if: ${{ github.event.repository.fork }}
+
+    steps:
+      - name: Checkout target repo
+        uses: actions/checkout@v3
+
+      - name: Sync upstream changes
+        id: sync
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+        with:
+          upstream_sync_repo: byJoey/cfnew
+          upstream_sync_branch: main
+          target_sync_branch: main
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          test_mode: false
+
+      - name: Sync check
+        if: failure()
+        run: |
+          echo "[Error] 由于上游仓库逻辑冲突，自动更新失败，请手动 Sync Fork。"
+          exit 1
